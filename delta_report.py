@@ -118,7 +118,7 @@ def report_changes( bids ):
             if won < old_won:
                 outbid += "%s : Qty. %d of %d (currently winning %d at $%s)\n" % ( bid['item'], bid['quantity']-won, bid['quantity'], won, prices[bid['item']] )
             elif won > old_won:
-                winning += "%s : Qty. %d of %d at $%s\n" % ( bid['item'], won, bid['quantity'], prices[bid['item']] )
+                winning += "%s : Qty. %d of %d at $%s (max bid $%s)\n" % ( bid['item'], won, bid['quantity'], prices[bid['item']], bid['max_bid'] )
             
         if outbid != "":
             outbid = "You've been outbid on:\n" + outbid
