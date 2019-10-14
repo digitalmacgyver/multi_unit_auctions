@@ -111,22 +111,27 @@ def report_changes( bids ):
 
         outbid = ""
         winning = ""
+
+        issue_report = False
         
         for bid in sorted( bb, key=operator.itemgetter( 'item' ) ):
             won = bid['won_quantity']
             old_won = bid['old_won_quantity']
             if won < old_won:
+                issue_report = True
                 outbid += "%s : Qty. %d of %d (currently winning %d at $%s)\n" % ( bid['item'], bid['quantity']-won, bid['quantity'], won, prices[bid['item']] )
-            elif won > old_won:
+            else:
+                if won > old_won:
+                    issue_report = True
                 winning += "%s : Qty. %d of %d at $%s (max bid $%s)\n" % ( bid['item'], won, bid['quantity'], prices[bid['item']], bid['max_bid'] )
             
         if outbid != "":
             outbid = "You've been outbid on:\n" + outbid
 
         if winning != "":
-            winning = "You're currently winning:\n" + winning
+            winning = "Status of your other bids:\n" + winning
 
-        if outbid != "" or winning != "":
+        if issue_report:
             userid = bid['bidder_url'].split( '=' )[-1]
             contact_url = "https://truedungeon.com/component/uddeim/?task=new&recip=%s" % ( userid )
             
