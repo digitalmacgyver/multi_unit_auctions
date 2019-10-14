@@ -128,9 +128,9 @@ def report_changes( bids ):
         if outbid != "":
             outbid = "You've been outbid on:\n" + outbid
             if winning != "":
-                winning = "Status of your other bids:\n" + winning
+                winning = "Status of your other bids - you are winning:\n" + winning
         elif winning != "":
-            winning = "Bid summary:\n" + winning
+            winning = "Bid summary - you are winning:\n" + winning
                 
         if issue_report:
             userid = bid['bidder_url'].split( '=' )[-1]
