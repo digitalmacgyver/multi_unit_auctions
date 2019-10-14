@@ -24,8 +24,16 @@ SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
 
 # The ID and range of a sample spreadsheet.
 AUCTION_SHEET_ID = '1b-cwze2D5X4WaheAWIXycDiR6ZGG0XDvhXEVCoAqxKY'
-BID_RANGE = 'No. 3!A2:K'
-WON_RANGE = 'No. 3!K3:M'
+
+# No. 3
+#CURRENT_NO = 3
+#BID_RANGE = 'No. 3!A2:K'
+#WON_RANGE = 'No. 3!K3:M'
+
+# No. 4
+CURRENT_NO = 4
+BID_RANGE = 'No. 4!A2:K'
+WON_RANGE = 'No. 4!K3:M'
 
 def auth():
     """Get login credentials done (opens browser tab for interactive
@@ -163,7 +171,7 @@ def compute_winners( bids ):
     return winners, running_total
 
 WIN_FRONT = '''
-Welcome to my Discount Lightning $8k Order Auction No. 3.
+Welcome to my Discount Lightning $8k Order Auction No. %d.
 
 I dropped the initial reserves for several items in this auction.
 
@@ -195,11 +203,13 @@ If you'd like to learn more, see the example below in the second post on this th
 
 [b]Payment:[/b] Is via PayPal and due within 3 days of me notifying you of your won bid.  The amount that reaches my PayPal account must be the sum of your won bids and shipping.
 
-NOTE: You may redeem 2 PyP selections for a complete C/UC/R ONYX Set.  You may redeem 18 PyP selections for a complete C/UC/R/UR ONYX Set.  Limit one such substitution per auction, priority will be given to winning bidders in order of highest bidder first, breaking ties on earliest bid.
-
 [size=6][b]Current Bids:[/b][/size]
 
-'''
+''' % ( CURRENT_NO )
+
+#NOTE: You may redeem 2 PyP selections for a complete C/UC/R ONYX Set.  You may redeem 18 PyP selections for a complete C/UC/R/UR ONYX Set.  Limit one such substitution per auction, priority will be given to winning bidders in order of highest bidder first, breaking ties on earliest bid.
+
+
 
 WIN_BACK = '''
 [b]The Fine Print:[/b] 
@@ -266,6 +276,7 @@ def main():
 
     update_sheet( service, sheet, winners )
 
-
+    print "Running total: %0.02f" % ( running_total )
+    
 if __name__ == '__main__':
     main()
