@@ -266,8 +266,6 @@ def main():
 
     update_sheet( service, sheet, winners )
 
-    
-
 
 if __name__ == '__main__':
     main()
