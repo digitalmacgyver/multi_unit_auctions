@@ -222,12 +222,27 @@ def print_winners( winners, running_total ):
     print WIN_FRONT
 
     print "$%0.02f of $7500 goal - %0.02f%% Funded\n" % ( running_total, 100*running_total / 7500 )
-    
+
+    first = True
     for item in sorted( winners.keys() ):
-        print "[u][b]%s[/b][/u]" % ( item )
+        item_first = True
+        row_message = "[u][b]%s[/b][/u]" % ( item )
         for wb in winners[item]:
-            print "Qty. %d : %s - $%0.02f" % ( wb['won_quantity'], wb['pseudonym'], wb['current_price'] )
-        print ""
+            if item.startswith( '2020 ONYX UR' ):
+                if first:
+                    first = False
+                    print "[u][b]2020 ONYX URs:[/b][/u]"
+                row_message = "ONXY" + item[12:]
+                print "%s : %s - $%0.02f" % ( row_message, wb['pseudonym'], wb['current_price'] )
+            else:
+                if item_first:
+                    item_first = False
+                    print row_message
+                print "Qty. %d : %s - $%0.02f" % ( wb['won_quantity'], wb['pseudonym'], wb['current_price'] )
+            if item.startswith( '2020 ONYX UR Tabor' ):
+                print ""
+        if not item.startswith( '2020 ONYX UR' ):
+            print ""
 
     print WIN_BACK
 

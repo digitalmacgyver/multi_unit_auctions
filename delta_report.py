@@ -21,9 +21,9 @@ SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
 
 # The ID and range of a sample spreadsheet.
 AUCTION_SHEET_ID = '1b-cwze2D5X4WaheAWIXycDiR6ZGG0XDvhXEVCoAqxKY'
-BID_RANGE = 'No. 3!A2:M'
+BID_RANGE = 'No. 4!A2:M'
 
-AUCTION_URL = 'https://truedungeon.com/forum?view=topic&catid=584&id=250555#356320'
+AUCTION_URL = 'https://truedungeon.com/forum?view=topic&catid=584&id=250559'
 
 def auth():
     """Get login credentials done (opens browser tab for interactive
@@ -117,7 +117,7 @@ def report_changes( bids ):
         for bid in sorted( bb, key=operator.itemgetter( 'item' ) ):
             won = bid['won_quantity']
             old_won = bid['old_won_quantity']
-            if won < old_won or ( old_won == '-1' and won < b['max_quantity'] ):
+            if won < old_won or ( old_won == -1 and won < bid['quantity'] ):
                 issue_report = True
                 outbid += "%s : Qty. %d of %d (currently winning %d at $%s)\n" % ( bid['item'], bid['quantity']-won, bid['quantity'], won, prices[bid['item']] )
             else:
