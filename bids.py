@@ -298,7 +298,7 @@ def main():
 
     update_sheet( service, sheet, winners )
 
-    print "Running total: %0.02f - %0.02f" % ( running_total, running_total / GOAL )
+    print "Running total: %0.02f - %0.02f" % ( running_total, 100*running_total / GOAL )
     
 if __name__ == '__main__':
     main()
