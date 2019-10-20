@@ -40,6 +40,8 @@ CURRENT_NO = 5
 BID_RANGE = 'No. 5!A2:K'
 WON_RANGE = 'No. 5!K3:M'
 
+GOAL = 7500
+
 def auth():
     """Get login credentials done (opens browser tab for interactive
     credential auth.
@@ -226,7 +228,7 @@ def print_winners( winners, running_total ):
 
     print WIN_FRONT
 
-    print "$%0.02f of $7500 goal - %0.02f%% Funded\n" % ( running_total, 100*running_total / 7500 )
+    print "$%0.02f of $%0.0f goal - %0.02f%% Funded\n" % ( running_total, GOAL, 100*running_total / GOAL )
 
     first = True
     for item in sorted( winners.keys() ):
@@ -296,7 +298,7 @@ def main():
 
     update_sheet( service, sheet, winners )
 
-    print "Running total: %0.02f" % ( running_total )
+    print "Running total: %0.02f - %0.02f" % ( running_total, running_total / GOAL )
     
 if __name__ == '__main__':
     main()
