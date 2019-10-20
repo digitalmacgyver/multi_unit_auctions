@@ -31,9 +31,14 @@ AUCTION_SHEET_ID = '1b-cwze2D5X4WaheAWIXycDiR6ZGG0XDvhXEVCoAqxKY'
 #WON_RANGE = 'No. 3!K3:M'
 
 # No. 4
-CURRENT_NO = 4
-BID_RANGE = 'No. 4!A2:K'
-WON_RANGE = 'No. 4!K3:M'
+#CURRENT_NO = 4
+#BID_RANGE = 'No. 4!A2:K'
+#WON_RANGE = 'No. 4!K3:M'
+
+# No. 5
+CURRENT_NO = 5
+BID_RANGE = 'No. 5!A2:K'
+WON_RANGE = 'No. 5!K3:M'
 
 def auth():
     """Get login credentials done (opens browser tab for interactive
@@ -195,7 +200,7 @@ If you'd like to learn more, see the example below in the second post on this th
 [ul]
   [li]The auction will end as soon as I process a bid that puts the total value at or over $7,500, including the value of all items still at their reserve price.[/li]
   [li]PyP choices are due at the time of payment.[/li]
-  [li]If the $7,500 threshold is not met by 10/25 the auction is not funded and will be cancelled.[/li]
+  [li]If the $7,500 threshold is not met by 10/31 the auction is not funded and will be cancelled.[/li]
   [li]Items will be mailed to you within 1 week after my receipt of them from True Adventures.  Be forewarned that some items (like adventure modules) are sent out by True Adventures much later than others.[/li]
 [/ul]
 

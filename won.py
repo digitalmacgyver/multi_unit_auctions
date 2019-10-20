@@ -20,11 +20,14 @@ SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
 
 # The ID and range of a sample spreadsheet.
 AUCTION_SHEET_ID = '1b-cwze2D5X4WaheAWIXycDiR6ZGG0XDvhXEVCoAqxKY'
-BID_RANGE = 'No. 3!A2:M'
+BID_RANGE = 'No. 4!A2:M'
 
-CURRENT_URL = 'https://truedungeon.com/forum?view=topic&catid=584&id=250555'
-NEXT_URL = 'https://truedungeon.com/forum?view=topic&catid=584&id=250559'
-AUCTION_NO = 3
+CURRENT_URL = 'https://truedungeon.com/forum?view=topic&catid=584&id=250559'
+NEXT_URL = 'https://truedungeon.com/forum?view=topic&catid=584&id=250572'
+
+AUCTION_NO = 4
+
+PAYMENT_DATE = 'October 23rd'
 
 
 def auth():
@@ -137,7 +140,7 @@ def report_end( bids ):
             won_message += '''
 You may announce your pseudonym on the thread at:\n%s for an $8 discount on shipping.
 
-Before October 18th please:
+Before %s please:
 
 1. Submit payment via PayPal to: mjhayward@gmail.com
 2. Send me your PyP selections, if any.
@@ -147,7 +150,7 @@ Thank you!
 
 If you missed out on something, I'm running another auction of the same kind at:
 %s
-''' % ( CURRENT_URL, NEXT_URL )
+''' % ( CURRENT_URL, PAYMENT_DATE, NEXT_URL )
 
         if lost_message != '':
             lost_message = "You bids did not win the quantities below.\n\nWould you like me to carry these bids over to Auction No. %d at\n%s\n?\n\n" % ( AUCTION_NO + 1, NEXT_URL )  + lost_message
