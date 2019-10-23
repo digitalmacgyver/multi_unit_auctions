@@ -143,6 +143,7 @@ You may announce your pseudonym on the thread at:\n%s for an $8 discount on ship
 Before %s please:
 
 1. Submit payment via PayPal to: mjhayward@gmail.com
+   - Please include in a memo your pseudonym: %s 
 2. Send me your PyP selections, if any.
 3. Send me your shipping address.
 
@@ -150,7 +151,7 @@ Thank you!
 
 If you missed out on something, I'm running another auction of the same kind at:
 %s
-''' % ( CURRENT_URL, PAYMENT_DATE, NEXT_URL )
+''' % ( CURRENT_URL, PAYMENT_DATE, bidder, NEXT_URL )
 
         if lost_message != '':
             lost_message = "You bids did not win the quantities below.\n\nWould you like me to carry these bids over to Auction No. %d at\n%s\n?\n\n" % ( AUCTION_NO + 1, NEXT_URL )  + lost_message
