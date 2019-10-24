@@ -20,15 +20,24 @@ SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
 
 # The ID and range of a sample spreadsheet.
 AUCTION_SHEET_ID = '1b-cwze2D5X4WaheAWIXycDiR6ZGG0XDvhXEVCoAqxKY'
-BID_RANGE = 'No. 4!A2:M'
 
-CURRENT_URL = 'https://truedungeon.com/forum?view=topic&catid=584&id=250559'
-NEXT_URL = 'https://truedungeon.com/forum?view=topic&catid=584&id=250572'
+# No. 4
+#BID_RANGE = 'No. 4!A2:M'
+#CURRENT_URL = 'https://truedungeon.com/forum?view=topic&catid=584&id=250559'
+#NEXT_URL = 'https://truedungeon.com/forum?view=topic&catid=584&id=250572'
+#AUCTION_NO = 4
+#PAYMENT_DATE = 'October 23rd'
+#SHIPPING_DISCOUNT = 8
+SHIPPING_COST = 8
 
-AUCTION_NO = 4
-
-PAYMENT_DATE = 'October 23rd'
-
+# No. 5
+BID_RANGE = 'No. 5!A2:M'
+CURRENT_URL = 'https://truedungeon.com/forum?view=topic&catid=584&id=250572'
+NEXT_URL = 'https://truedungeon.com/forum?view=topic&catid=584&id=250584'
+AUCTION_NO = 5
+PAYMENT_DATE = 'October 26th'
+SHIPPING_COST = 8
+SHIPPING_DISCOUNT = 8
 
 def auth():
     """Get login credentials done (opens browser tab for interactive
@@ -86,11 +95,11 @@ def process_bids( sheet, cancelled=False ):
         'won_quantity' : int,
         'old_won_quantity' : int
     }
-    
+
     headers = sheet[0]
 
     bids = []
-    
+
     for row in sheet[1:]:
         bid = {}
         for i in range( len( headers ) ):
@@ -102,7 +111,7 @@ def process_bids( sheet, cancelled=False ):
             bid[headers[i]] = conversion( row[i] )
 
         bids.append( bid )
-            
+
     return bids
 
 
@@ -110,7 +119,7 @@ def report_end( bids ):
     bidders = sorted( { b['pseudonym'] : True for b in bids }.keys() )
 
     prices = { b['item'] : b['current_price'] for b in bids if b['current_price'] != '' }
-    
+
     for bidder in bidders:
         bb = [ b for b in bids if ( b['pseudonym'] == bidder and b['cancelled'] == '' ) ]
 
@@ -121,12 +130,12 @@ def report_end( bids ):
 
         userid = bb[0]['bidder_url'].split( '=' )[-1]
         contact_url = "https://truedungeon.com/component/uddeim/?task=new&recip=%s" % ( userid )
-        
+
         for bid in sorted( bb, key=operator.itemgetter( 'item' ) ):
             won = bid['won_quantity']
             lost = bid['quantity'] - won
             price = float( prices[bid['item']] )
-            
+
             if won > 0:
                 won_message += "%s : %d at $%0.02f = $%0.02f\n" % ( bid['item'], won, price, won*price )
                 won_total += won*price
@@ -136,14 +145,14 @@ def report_end( bids ):
 
         if won_message != '':
             won_message = "You won the following:\n\n" + won_message
-            won_message += "\nFor a grand total of $%0.02f + $8 shipping = $%0.02f\n" % ( won_total, won_total + 8 )
+            won_message += "\nFor a grand total of $%0.02f + $%0.02f shipping = $%0.02f\n" % ( won_total, SHIPPING_COST, won_total + SHIPPING_COST )
             won_message += '''
-You may announce your pseudonym on the thread at:\n%s for an $8 discount on shipping.
+You may announce your pseudonym on the thread at:\n%s for an $%0.02f discount on shipping.
 
 Before %s please:
 
 1. Submit payment via PayPal to: mjhayward@gmail.com
-   - Please include in a memo your pseudonym: %s 
+   - Please include this memo with your payment: No. %d - %s
 2. Send me your PyP selections, if any.
 3. Send me your shipping address.
 
@@ -151,7 +160,7 @@ Thank you!
 
 If you missed out on something, I'm running another auction of the same kind at:
 %s
-''' % ( CURRENT_URL, PAYMENT_DATE, bidder, NEXT_URL )
+''' % ( CURRENT_URL, SHIPPING_DISCOUNT, PAYMENT_DATE, AUCTION_NO, bidder, NEXT_URL )
 
         if lost_message != '':
             lost_message = "You bids did not win the quantities below.\n\nWould you like me to carry these bids over to Auction No. %d at\n%s\n?\n\n" % ( AUCTION_NO + 1, NEXT_URL )  + lost_message
@@ -165,13 +174,13 @@ If you missed out on something, I'm running another auction of the same kind at:
             if lost_message != '':
                 print "-"*80
                 print "%s\nLost Items update for %s.  In Auction No. %d:\n%s\n\n%s" % ( contact_url, bidder, AUCTION_NO, CURRENT_URL, lost_message )
-            
-            
+
+
 
 def main():
     # Get the auction sheet and current bids.
     service = auth()
-    
+
     sheet = get_sheet( service, AUCTION_SHEET_ID, BID_RANGE )
 
     bids = process_bids( sheet )

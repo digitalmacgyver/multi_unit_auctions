@@ -21,9 +21,9 @@ SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
 
 # The ID and range of a sample spreadsheet.
 AUCTION_SHEET_ID = '1b-cwze2D5X4WaheAWIXycDiR6ZGG0XDvhXEVCoAqxKY'
-BID_RANGE = 'No. 5!A2:M'
+BID_RANGE = 'No. 6!A2:M'
 
-AUCTION_URL = 'https://truedungeon.com/forum?view=topic&catid=584&id=250572'
+AUCTION_URL = 'https://truedungeon.com/forum?view=topic&catid=584&id=250584'
 
 def auth():
     """Get login credentials done (opens browser tab for interactive
@@ -81,11 +81,11 @@ def process_bids( sheet, cancelled=False ):
         'won_quantity' : int,
         'old_won_quantity' : int
     }
-    
+
     headers = sheet[0]
 
     bids = []
-    
+
     for row in sheet[1:]:
         bid = {}
         for i in range( len( headers ) ):
@@ -97,7 +97,7 @@ def process_bids( sheet, cancelled=False ):
             bid[headers[i]] = conversion( row[i] )
 
         bids.append( bid )
-            
+
     return bids
 
 
@@ -105,7 +105,7 @@ def report_changes( bids ):
     bidders = sorted( { b['pseudonym'] : True for b in bids }.keys() )
 
     prices = { b['item'] : b['current_price'] for b in bids if b['current_price'] != '' }
-    
+
     for bidder in bidders:
         bb = [ b for b in bids if ( b['pseudonym'] == bidder and b['cancelled'] == '' ) ]
 
@@ -113,7 +113,7 @@ def report_changes( bids ):
         winning = ""
 
         issue_report = False
-        
+
         for bid in sorted( bb, key=operator.itemgetter( 'item' ) ):
             won = bid['won_quantity']
             old_won = bid['old_won_quantity']
@@ -124,25 +124,25 @@ def report_changes( bids ):
                 if won > old_won:
                     issue_report = True
                 winning += "%s : winning %d of %d at $%s (max bid $%s)\n" % ( bid['item'], won, bid['quantity'], prices[bid['item']], bid['max_bid'] )
-            
+
         if outbid != "":
             outbid = "You've been outbid on:\n" + outbid
             if winning != "":
                 winning = "Status of your other bids:\n" + winning
         elif winning != "":
             winning = "Bid summary - you are winning:\n" + winning
-                
+
         if issue_report:
             userid = bid['bidder_url'].split( '=' )[-1]
             contact_url = "https://truedungeon.com/component/uddeim/?task=new&recip=%s" % ( userid )
-            
+            print '='*80
             print "%s\nAuction update for %s\n\nIn auction: %s\n\n%s\n\n%s" % ( contact_url, bidder, AUCTION_URL, outbid, winning )
-            
+
 
 def main():
     # Get the auction sheet and current bids.
     service = auth()
-    
+
     sheet = get_sheet( service, AUCTION_SHEET_ID, BID_RANGE )
 
     bids = process_bids( sheet )

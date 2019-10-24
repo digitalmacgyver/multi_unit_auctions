@@ -24,9 +24,9 @@ SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
 
 # The ID and range of a sample spreadsheet.
 AUCTION_SHEET_ID = '1b-cwze2D5X4WaheAWIXycDiR6ZGG0XDvhXEVCoAqxKY'
-BID_RANGE = 'No. 5!A2:M'
+BID_RANGE = 'No. 6!A2:M'
 
-AUCTION_URL = 'https://truedungeon.com/forum?view=topic&catid=584&id=250572'
+AUCTION_URL = 'https://truedungeon.com/forum?view=topic&catid=584&id=250584'
 
 def auth():
     """Get login credentials done (opens browser tab for interactive
@@ -84,11 +84,11 @@ def process_bids( sheet, cancelled=False ):
         'won_quantity' : int,
         'old_won_quantity' : int,
     }
-    
+
     headers = sheet[0]
 
     bids = []
-    
+
     for row in sheet[1:]:
         bid = {}
         for i in range( len( headers ) ):
@@ -100,7 +100,7 @@ def process_bids( sheet, cancelled=False ):
             bid[headers[i]] = conversion( row[i] )
 
         bids.append( bid )
-            
+
     return bids
 
 def get_deals( prices ):
@@ -175,14 +175,14 @@ def report_changes( bids ):
     message += "\n\n%0.0f%% Funded\n\n" % ( 100*float( total_value ) / goal )
 
     message += get_deals( prices )
-    
+
     print message
-            
+
 
 def main():
     # Get the auction sheet and current bids.
     service = auth()
-    
+
     sheet = get_sheet( service, AUCTION_SHEET_ID, BID_RANGE )
 
     bids = process_bids( sheet )

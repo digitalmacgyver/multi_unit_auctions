@@ -36,11 +36,19 @@ AUCTION_SHEET_ID = '1b-cwze2D5X4WaheAWIXycDiR6ZGG0XDvhXEVCoAqxKY'
 #WON_RANGE = 'No. 4!K3:M'
 
 # No. 5
-CURRENT_NO = 5
-BID_RANGE = 'No. 5!A2:K'
-WON_RANGE = 'No. 5!K3:M'
+#CURRENT_NO = 5
+#BID_RANGE = 'No. 5!A2:K'
+#WON_RANGE = 'No. 5!K3:M'
+
+# No. 6
+CURRENT_NO = 6
+BID_RANGE = 'No. 6!A2:K'
+WON_RANGE = 'No. 6!K3:M'
 
 GOAL = 7500
+
+END_DATE = 'December 7th'
+#END_DATE = 'October 31st'
 
 def auth():
     """Get login credentials done (opens browser tab for interactive
@@ -98,11 +106,11 @@ def process_bids( sheet, cancelled=False ):
         'won_quantity' : int,
         'old_won_quantity' : int
     }
-    
+
     headers = sheet[0]
 
     bids = []
-    
+
     for row in sheet[1:]:
         bid = {}
         for i in range( len( headers ) ):
@@ -113,10 +121,10 @@ def process_bids( sheet, cancelled=False ):
 
             bid[headers[i]] = conversion( row[i] )
 
-            
+
 
         bids.append( bid )
-            
+
     return bids
 
 
@@ -135,13 +143,13 @@ def compute_winners( bids ):
     # Prepare for analysis:
     for b in bids:
         b['won_quantity'] = 0
-    
+
     quantities = { b['item'] : b['quantity'] for b in bids if b['pseudonym'] == 'RESERVE' }
 
     winners = {}
 
     running_total = 0
-    
+
     for item in sorted( quantities.keys() ):
         item_bids = sorted( [ b for b in bids if b['item'] == item ], key=winner_sort )
 
@@ -152,9 +160,9 @@ def compute_winners( bids ):
             if ib['cancelled'] != '':
                 # Skip cancelled bids.
                 continue
-            
+
             desired = ib['quantity']
-            
+
             if available <= 0:
                 ib['won_quantity'] = 0
 
@@ -172,7 +180,7 @@ def compute_winners( bids ):
             ib['current_price'] = price
 
         running_total += quantities[item] * price
-            
+
         winners[item] = [ ib for ib in item_bids if ib['won_quantity'] > 0 ]
 
     return winners, running_total
@@ -180,7 +188,7 @@ def compute_winners( bids ):
 WIN_FRONT = '''
 Welcome to my Discount Lightning $8k Order Auction No. %d.
 
-I dropped the initial reserves for several items in this auction.
+[b]Change to Auction No. 6: Announcing your pseudonym at end of auction now gets you a $3 discount on shipping, rather than free shipping.[/b]
 
 By now you know the drill: Faster, Cheaper, and high Transparency.  Details in Post #2.
 
@@ -200,26 +208,27 @@ If you'd like to learn more, see the example below in the second post on this th
 
 [b]Threshold and Timelines:[/b]
 [ul]
-  [li]The auction will end as soon as I process a bid that puts the total value at or over $7,500, including the value of all items still at their reserve price.[/li]
+  [li]The auction will end as soon as I process a bid that puts the total value at or over $%s, including the value of all items still at their reserve price.[/li]
   [li]PyP choices are due at the time of payment.[/li]
-  [li]If the $7,500 threshold is not met by 10/31 the auction is not funded and will be cancelled.[/li]
+  [li]If the $%s threshold is not met by %s the auction is not funded and will be cancelled.[/li]
   [li]Items will be mailed to you within 1 week after my receipt of them from True Adventures.  Be forewarned that some items (like adventure modules) are sent out by True Adventures much later than others.[/li]
 [/ul]
 
-[b]Shipping:[/b] Within the US: $8 per customer.  Outside the US: Actual shipping cost.  You may choose to announce your pseudonym after the auction in exchange for free shipping to the US, or an $8 discount on shipping outside the US.
+[b]Shipping:[/b] Within the US: $8 per customer.  Outside the US: Actual shipping cost.  You may choose to announce your pseudonym after the auction in exchange for a $3 discount on shipping.  Maximum shipping per customer across all auctions is $14.35.  If your total purchases across all auctions exceed $2000 I will refund all shipping costs.
+
 
 [b]Payment:[/b] Is via PayPal and due within 3 days of me notifying you of your won bid.  The amount that reaches my PayPal account must be the sum of your won bids and shipping.
 
 [size=6][b]Current Bids:[/b][/size]
 
-''' % ( CURRENT_NO )
+''' % ( CURRENT_NO, GOAL, GOAL, END_DATE )
 
 #NOTE: You may redeem 2 PyP selections for a complete C/UC/R ONYX Set.  You may redeem 18 PyP selections for a complete C/UC/R/UR ONYX Set.  Limit one such substitution per auction, priority will be given to winning bidders in order of highest bidder first, breaking ties on earliest bid.
 
 
 
 WIN_BACK = '''
-[b]The Fine Print:[/b] 
+[b]The Fine Print:[/b]
 See the next post for details on bidding and other corner case rules.
 '''
 
@@ -268,7 +277,7 @@ def update_sheet( service, sheet, winners ):
         result_won = 0
         result_price = ''
         result_old_won = int( row[10] )
-        
+
         for w in winners[item]:
             if w['bid_order'] == bid_order:
                 result_won = w['won_quantity']
@@ -287,11 +296,11 @@ def main():
     # Get the auction sheet and current bids.
 
     service = auth()
-    
+
     sheet = get_sheet( service, AUCTION_SHEET_ID, BID_RANGE )
 
     bids = process_bids( sheet )
-    
+
     winners, running_total = compute_winners( bids )
 
     print_winners( winners, running_total )
@@ -299,6 +308,6 @@ def main():
     update_sheet( service, sheet, winners )
 
     print "Running total: %0.02f - %0.02f" % ( running_total, 100*running_total / GOAL )
-    
+
 if __name__ == '__main__':
     main()
