@@ -169,7 +169,7 @@ If you missed out on something, I'm running another auction of the same kind at:
             print "="*80
 
             if won_message != '':
-                print "%s\nWon Items update for %s.  In Auction No. %d:\n%s\n\n%s" % ( contact_url, bidder, AUCTION_NO, CURRENT_URL, won_message )
+                print "%s\nPayment due for %s.  In Auction No. %d:\n%s\n\n%s" % ( contact_url, bidder, AUCTION_NO, CURRENT_URL, won_message )
 
             if lost_message != '':
                 print "-"*80
