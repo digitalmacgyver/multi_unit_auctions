@@ -28,16 +28,27 @@ AUCTION_SHEET_ID = '1b-cwze2D5X4WaheAWIXycDiR6ZGG0XDvhXEVCoAqxKY'
 #AUCTION_NO = 4
 #PAYMENT_DATE = 'October 23rd'
 #SHIPPING_DISCOUNT = 8
-SHIPPING_COST = 8
+#SHIPPING_COST = 8
 
 # No. 5
-BID_RANGE = 'No. 5!A2:M'
-CURRENT_URL = 'https://truedungeon.com/forum?view=topic&catid=584&id=250572'
-NEXT_URL = 'https://truedungeon.com/forum?view=topic&catid=584&id=250584'
-AUCTION_NO = 5
-PAYMENT_DATE = 'October 26th'
+#BID_RANGE = 'No. 5!A2:M'
+#CURRENT_URL = 'https://truedungeon.com/forum?view=topic&catid=584&id=250572'
+#NEXT_URL = 'https://truedungeon.com/forum?view=topic&catid=584&id=250584'
+#AUCTION_NO = 5
+#PAYMENT_DATE = 'October 26th'
+#SHIPPING_COST = 8
+#SHIPPING_DISCOUNT = 8
+
+# No. 6
+BID_RANGE = 'No. 6!A2:M'
+CURRENT_URL = 'https://truedungeon.com/forum?view=topic&catid=584&id=250584'
+NEXT_URL = 'https://truedungeon.com/forum?view=topic&catid=584&id=250617'
+AUCTION_NO = 6
+PAYMENT_DATE = 'November 2nd'
 SHIPPING_COST = 8
-SHIPPING_DISCOUNT = 8
+SHIPPING_DISCOUNT = 3
+
+
 
 def auth():
     """Get login credentials done (opens browser tab for interactive
@@ -169,7 +180,7 @@ If you missed out on something, I'm running another auction of the same kind at:
             print "="*80
 
             if won_message != '':
-                print "%s\nPayment due for %s.  In Auction No. %d:\n%s\n\n%s" % ( contact_url, bidder, AUCTION_NO, CURRENT_URL, won_message )
+                print "%s\nPayment for %s.  In Auction No. %d:\n%s\n\n%s" % ( contact_url, bidder, AUCTION_NO, CURRENT_URL, won_message )
 
             if lost_message != '':
                 print "-"*80

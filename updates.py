@@ -24,9 +24,8 @@ SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
 
 # The ID and range of a sample spreadsheet.
 AUCTION_SHEET_ID = '1b-cwze2D5X4WaheAWIXycDiR6ZGG0XDvhXEVCoAqxKY'
-BID_RANGE = 'No. 6!A2:M'
-
-AUCTION_URL = 'https://truedungeon.com/forum?view=topic&catid=584&id=250584'
+#BID_RANGE = 'No. 6!A2:M'
+BID_RANGE = 'No. 7!A2:M'
 
 def auth():
     """Get login credentials done (opens browser tab for interactive
@@ -127,7 +126,7 @@ def get_deals( prices ):
         if float( prices[onyx] ) < 100:
             onyx_count += 1
     if onyx_count > 0:
-        result += "%d ONYX URs under $100\n" % ( onyx_count )
+        result += "[b]%d ONYX URs under $100[/b]\n" % ( onyx_count )
 
     dt = texttable.Texttable()
     dt.set_cols_align( ['l', 'r'] )
@@ -147,7 +146,7 @@ def get_deals( prices ):
 
     if deals:
         dt.add_rows( deals, header=False )
-        result = "Plenty of deals left based on current bids of:\n" + result + dt.draw()
+        result = "Plenty of deals left based on current bids of:\n" + result + "[code]" + dt.draw() + "[/code]"
 
     return result
 
