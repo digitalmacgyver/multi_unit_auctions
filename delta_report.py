@@ -23,7 +23,7 @@ SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
 AUCTION_SHEET_ID = '1b-cwze2D5X4WaheAWIXycDiR6ZGG0XDvhXEVCoAqxKY'
 BID_RANGE = 'No. 7!A2:M'
 
-AUCTION_URL = 'https://truedungeon.com/forum?view=topic&catid=584&id=250584'
+AUCTION_URL = 'https://truedungeon.com/forum?view=topic&catid=584&id=250617'
 
 def auth():
     """Get login credentials done (opens browser tab for interactive
