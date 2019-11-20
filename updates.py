@@ -25,7 +25,10 @@ SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
 # The ID and range of a sample spreadsheet.
 AUCTION_SHEET_ID = '1b-cwze2D5X4WaheAWIXycDiR6ZGG0XDvhXEVCoAqxKY'
 #BID_RANGE = 'No. 6!A2:M'
-BID_RANGE = 'No. 7!A2:M'
+#BID_RANGE = 'No. 7!A2:M'
+BID_RANGE = 'No. 8!A2:M'
+
+GOAL = 6815
 
 def auth():
     """Get login credentials done (opens browser tab for interactive
@@ -164,14 +167,13 @@ def report_changes( bids ):
         message += "%s\n" % ( item )
 
     total_value = 0
-    goal = 7500
     for b in bids:
         if b['cancelled'] == '' and b['won_quantity'] > 0:
             total_value += int( b['won_quantity'] ) * float( b['current_price'] )
 
 
 
-    message += "\n\n%0.0f%% Funded\n\n" % ( 100*float( total_value ) / goal )
+    message += "\n\n%0.0f%% Funded\n\n" % ( 100*float( total_value ) / GOAL )
 
     message += get_deals( prices )
 

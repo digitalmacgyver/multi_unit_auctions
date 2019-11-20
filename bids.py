@@ -46,11 +46,16 @@ AUCTION_SHEET_ID = '1b-cwze2D5X4WaheAWIXycDiR6ZGG0XDvhXEVCoAqxKY'
 #WON_RANGE = 'No. 6!K3:M'
 
 # No. 7
-CURRENT_NO = 7
-BID_RANGE = 'No. 7!A2:K'
-WON_RANGE = 'No. 7!K3:M'
+#CURRENT_NO = 7
+#BID_RANGE = 'No. 7!A2:K'
+#WON_RANGE = 'No. 7!K3:M'
+#GOAL = 7500
 
-GOAL = 7500
+# No. 8
+CURRENT_NO = 8
+BID_RANGE = 'No. 8!A2:K'
+WON_RANGE = 'No. 8!K3:M'
+GOAL = 6815
 
 END_DATE = 'December 7th'
 #END_DATE = 'October 31st'

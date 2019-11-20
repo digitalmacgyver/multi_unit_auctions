@@ -40,14 +40,22 @@ AUCTION_SHEET_ID = '1b-cwze2D5X4WaheAWIXycDiR6ZGG0XDvhXEVCoAqxKY'
 #SHIPPING_DISCOUNT = 8
 
 # No. 6
-BID_RANGE = 'No. 6!A2:M'
-CURRENT_URL = 'https://truedungeon.com/forum?view=topic&catid=584&id=250584'
-NEXT_URL = 'https://truedungeon.com/forum?view=topic&catid=584&id=250617'
-AUCTION_NO = 6
-PAYMENT_DATE = 'November 2nd'
+#BID_RANGE = 'No. 6!A2:M'
+#CURRENT_URL = 'https://truedungeon.com/forum?view=topic&catid=584&id=250584'
+#NEXT_URL = 'https://truedungeon.com/forum?view=topic&catid=584&id=250617'
+#AUCTION_NO = 6
+#PAYMENT_DATE = 'November 2nd'
+#SHIPPING_COST = 8
+#SHIPPING_DISCOUNT = 3
+
+# No. 7
+BID_RANGE = 'No. 7!A2:M'
+CURRENT_URL = 'https://truedungeon.com/forum?view=topic&catid=584&id=250617'
+NEXT_URL = 'https://truedungeon.com/forum?view=topic&catid=584&id=250702'
+AUCTION_NO = 7
+PAYMENT_DATE = 'November 22nd'
 SHIPPING_COST = 8
 SHIPPING_DISCOUNT = 3
-
 
 
 def auth():
