@@ -8,6 +8,7 @@ Handle bids from multi-unit auctions recorded in a Google sheet.
 '''
 
 import csv
+import datetime
 import operator
 import pickle
 import os.path
@@ -85,7 +86,7 @@ def process_bids( sheet, cancelled=False ):
     bids = []
 
     for row in sheet[1:]:
-        print row
+        #print row
         bid = {}
         for i in range( len( headers ) ):
             if headers[i] in types:
@@ -111,7 +112,8 @@ def report_end( bids ):
         address = ""
         item_counts = {}
         won_message = []
-
+        shipping = {}
+            
         bb = [ b for b in bids if b['bidder_name'] == bidder ]
         
         userid = bb[0]['bidder_url'].split( '=' )[-1]
@@ -136,13 +138,70 @@ def report_end( bids ):
         for ic in sorted( item_counts.keys() ):
             line_items.append( [ item_counts[ic], ic ] )
         dt.add_rows( line_items )
-            
+
+        # DEBUG - this is a nightmare - skip it - it will be faster to just print the ~50 labels one by one.
+        '''
+        shipping['Order ID (required)'] = bidder
+        shipping['Order Date'] = datetime.datetime.today().strftime( '%m/%d/%Y' )
+        # Dictates insurance?
+        shipping['Order Value'] = 0
+        shipping['Requested Service'] = 'Standard Shipping'
+
+        # I need to ensure my addresses are formatted as:
+        # full name\nstreet\ncity, state zip
+        address_parts = address.split( '\n' )
+        shipping['Ship To - Name'] = address_parts[0]
+        shipping['Ship To - Address 1'] = address_parts[1]
+        city, rest = address_parts[2].split( ', ' )
+        state = rest[:2]
+        zipcode = rest[3:]
+        shipping['Ship To - State/Province'] = state
+        shipping['Ship To - City'] = city
+        shipping['Ship To - Postal Code'] = zipcode
+        '''
         
         details = "\n".join( sorted( won_message ) )
 
         print "-"*80, "\n", contact_url, "\n", "Auction Items for: %s\n\n%s\n\n%s\n\nAuction Breakdown:\n%s\n\n" % ( bidder, address, dt.draw(), details )
-        
 
+
+
+def stamps_csv():
+    # THIS DOESN'T DO ANYTHING
+    '''Stamps CSV requires information in particular order format.
+
+    Order ID (required),Order Date,Order Value,Requested Service,Ship To - Name,Ship To - Company,Ship To - Address 1,Ship To - Address 2,Ship To - Address 3,Ship To - State/Province,Ship To - City,Ship To - Postal Code,Ship To - Country,Ship To - Phone,Ship To - Email,Total Weight in Oz,Dimensions - Length,Dimensions - Width,Dimensions - Height,Notes - From Customer,Notes - Internal,Gift Wrap?,Gift Message
+    123-456,6/14/1984,9.99,Standard Shipping,Joe Recipient,ExampleCo,123 Main Street,,,CA,Los Angeles,12345,US,555-555-5555,email@example.com,13,11.75,8.75,11.75,Example notes from customer,Example internal notes,TRUE,Example gift message text
+    '''
+
+    fields = [
+        'Order ID (required)',
+        'Order Date',
+        'Order Value',
+        'Requested Service',
+        'Ship To - Name',
+        'Ship To - Company',
+        'Ship To - Address 1',
+        'Ship To - Address 2',
+        'Ship To - Address 3',
+        'Ship To - State/Province',
+        'Ship To - City',
+        'Ship To - Postal Code',
+        'Ship To - Country',
+        'Ship To - Phone',
+        'Ship To - Email',
+        'Total Weight in Oz',
+        'Dimensions - Length',
+        'Dimensions - Width',
+        'Dimensions - Height',
+        'Notes - From Customer',
+        'Notes - Internal',
+        'Gift Wrap?',
+        'Gift Message'
+    ]
+
+    
+    
 def main():
     # Get the auction sheet and current bids.
     service = auth()
