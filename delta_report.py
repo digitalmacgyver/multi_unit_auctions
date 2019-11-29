@@ -137,7 +137,7 @@ def report_changes( bids ):
             userid = bid['bidder_url'].split( '=' )[-1]
             contact_url = "https://truedungeon.com/component/uddeim/?task=new&recip=%s" % ( userid )
             print '='*80
-            print "%s\nAuction update for %s\n\nIn auction: %s\n\n%s\n\n%s" % ( contact_url, bidder, AUCTION_URL, outbid, winning )
+            print "%s\nAuction update for %s\n\nNOTE: If this auction doesn't fund by December 7th I will need to close it early as I need time to collect payment and place the order before the 3x Treasure Chips early order reward is still available.\n\nIn auction: %s\n\n%s\n\n%s" % ( contact_url, bidder, AUCTION_URL, outbid, winning )
 
 
 def main():

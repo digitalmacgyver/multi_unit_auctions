@@ -161,7 +161,7 @@ def report_changes( bids ):
 
     changed = { b['item'] : True for b in bids if b['old_won_quantity'] == -1 and b['cancelled'] == '' }
 
-    message = "Updated winning bids for:\n\n"
+    message = "[b]NOTE: If this auction doesn't fund by December 7th I will need to close it early as I need time to collect payment and place the order before the 3x Treasure Chips early order reward is still available.[/b]\n\n Updated winning bids for:\n\n"
 
     for item in sorted( changed.keys() ):
         message += "%s\n" % ( item )
