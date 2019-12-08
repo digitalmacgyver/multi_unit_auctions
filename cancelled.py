@@ -3,7 +3,6 @@
 '''
 Handle bids from multi-unit auctions recorded in a Google sheet.
 
-4. Produce notifications for people who've been outbid.
 5. Produce notifications at end of auction summarizing won items.
 
 '''
@@ -21,10 +20,49 @@ SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
 
 # The ID and range of a sample spreadsheet.
 AUCTION_SHEET_ID = '1b-cwze2D5X4WaheAWIXycDiR6ZGG0XDvhXEVCoAqxKY'
-#BID_RANGE = 'No. 7!A2:M'
-BID_RANGE = 'No. 8!A2:M'
 
-AUCTION_URL = 'https://truedungeon.com/forum?view=topic&catid=584&id=250702'
+# No. 4
+#BID_RANGE = 'No. 4!A2:M'
+#CURRENT_URL = 'https://truedungeon.com/forum?view=topic&catid=584&id=250559'
+#NEXT_URL = 'https://truedungeon.com/forum?view=topic&catid=584&id=250572'
+#AUCTION_NO = 4
+#PAYMENT_DATE = 'October 23rd'
+#SHIPPING_DISCOUNT = 8
+#SHIPPING_COST = 8
+
+# No. 5
+#BID_RANGE = 'No. 5!A2:M'
+#CURRENT_URL = 'https://truedungeon.com/forum?view=topic&catid=584&id=250572'
+#NEXT_URL = 'https://truedungeon.com/forum?view=topic&catid=584&id=250584'
+#AUCTION_NO = 5
+#PAYMENT_DATE = 'October 26th'
+#SHIPPING_COST = 8
+#SHIPPING_DISCOUNT = 8
+
+# No. 6
+#BID_RANGE = 'No. 6!A2:M'
+#CURRENT_URL = 'https://truedungeon.com/forum?view=topic&catid=584&id=250584'
+#NEXT_URL = 'https://truedungeon.com/forum?view=topic&catid=584&id=250617'
+#AUCTION_NO = 6
+#PAYMENT_DATE = 'November 2nd'
+#SHIPPING_COST = 8
+#SHIPPING_DISCOUNT = 3
+
+# No. 7
+#BID_RANGE = 'No. 7!A2:M'
+#CURRENT_URL = 'https://truedungeon.com/forum?view=topic&catid=584&id=250617'
+#NEXT_URL = 'https://truedungeon.com/forum?view=topic&catid=584&id=250702'
+#AUCTION_NO = 7
+#PAYMENT_DATE = 'November 22nd'
+#SHIPPING_COST = 8
+#SHIPPING_DISCOUNT = 3
+
+# No. 8
+BID_RANGE = 'No. 8!A2:M'
+CURRENT_URL = 'https://truedungeon.com/forum?view=topic&catid=584&id=250702'
+AUCTION_NO = 8
+
+
 
 def auth():
     """Get login credentials done (opens browser tab for interactive
@@ -102,7 +140,7 @@ def process_bids( sheet, cancelled=False ):
     return bids
 
 
-def report_changes( bids ):
+def report_end( bids ):
     bidders = sorted( { b['pseudonym'] : True for b in bids }.keys() )
 
     prices = { b['item'] : b['current_price'] for b in bids if b['current_price'] != '' }
@@ -110,34 +148,37 @@ def report_changes( bids ):
     for bidder in bidders:
         bb = [ b for b in bids if ( b['pseudonym'] == bidder and b['cancelled'] == '' ) ]
 
-        outbid = ""
-        winning = ""
+        won_message = ""
+        lost_message = ""
 
-        issue_report = False
+        won_total = 0
+
+        userid = bb[0]['bidder_url'].split( '=' )[-1]
+        contact_url = "https://truedungeon.com/component/uddeim/?task=new&recip=%s" % ( userid )
 
         for bid in sorted( bb, key=operator.itemgetter( 'item' ) ):
             won = bid['won_quantity']
-            old_won = bid['old_won_quantity']
-            if won < old_won or ( old_won == -1 and won < bid['quantity'] ):
-                issue_report = True
-                outbid += "%s : %d of %d (currently winning %d at $%s with max bid $%0.02f)\n" % ( bid['item'], bid['quantity']-won, bid['quantity'], won, prices[bid['item']], bid['max_bid'] )
-            else:
-                if won > old_won:
-                    issue_report = True
-                winning += "%s : winning %d of %d at $%s (max bid $%s)\n" % ( bid['item'], won, bid['quantity'], prices[bid['item']], bid['max_bid'] )
+            lost = bid['quantity'] - won
+            price = float( prices[bid['item']] )
 
-        if outbid != "":
-            outbid = "You've been outbid on:\n" + outbid
-            if winning != "":
-                winning = "Status of your other bids:\n" + winning
-        elif winning != "":
-            winning = "Bid summary - you are winning:\n" + winning
+            if won > 0:
+                won_message += "%s : %d at $%0.02f = $%0.02f\n" % ( bid['item'], won, price, won*price )
+                won_total += won*price
 
-        if issue_report:
-            userid = bid['bidder_url'].split( '=' )[-1]
-            contact_url = "https://truedungeon.com/component/uddeim/?task=new&recip=%s" % ( userid )
-            print '='*80
-            print "%s\nAuction update for %s\n\nNOTE: If this auction doesn't fund by December 7th I will need to cancel it or close it early as I need time to collect payment and place the order before the 3x Treasure Chips early order reward is still available.\n\nIn auction: %s\n\n%s\n\n%s" % ( contact_url, bidder, AUCTION_URL, outbid, winning )
+            if lost > 0:
+                lost_message += "%s : %d with max_bid $%0.02f\n" % ( bid['item'], lost, bid['max_bid'] )
+
+        if won_message != '':
+            won_message = "You won the following:\n\n" + won_message
+            won_message += 'foo'
+        if lost_message != '':
+            lost_message = 'foo'
+
+        if won_message != '' or lost_message != '':
+            print "="*80
+
+            print "%s\nAuction Cancelled - %s.\n\nUnfortunately Auction No. 8 did not meet its funding goal by the deadline of midnight December 7th.\n\nBecause this auction includes 2020 treasure chips, which are only available as part of the 8k order during a limited preorder period, I am canceling this auction.\n\nThis is because here is no longer time to reach the goal, collect funds, and place the order before the deadline for 2020 treasure chips.\n\nThank you for your bids, I'm sorry this auction didn't succeed (if it were super close to the goal I would have gone ahead anyway, but it's over $200 away from the goal).\n\nI will likely start up another auction post PAX South.\n" % ( contact_url, bidder )
+            
 
 
 def main():
@@ -148,7 +189,7 @@ def main():
 
     bids = process_bids( sheet )
 
-    report_changes( bids )
+    report_end( bids )
 
 
 if __name__ == '__main__':

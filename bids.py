@@ -122,6 +122,12 @@ def process_bids( sheet, cancelled=False ):
     bids = []
 
     for row in sheet[1:]:
+        if row == []:
+            print "Skipping blank row."
+            continue
+        else:
+            #print "Working on row:\n%s" % ( row )
+            pass
         bid = {}
         for i in range( len( headers ) ):
             if headers[i] in types:
@@ -129,8 +135,11 @@ def process_bids( sheet, cancelled=False ):
             else:
                 conversion = str
 
-            bid[headers[i]] = conversion( row[i] )
-
+            try:
+                bid[headers[i]] = conversion( row[i] )
+            except Exception as e:
+                print "ERROR handling row:\n%s\nIndex: %s\nHeader: %s\nLed to:\n%s" % ( row, i, headers[i], e )
+                raise
 
 
         bids.append( bid )
