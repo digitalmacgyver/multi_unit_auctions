@@ -24,6 +24,7 @@ SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
 AUCTION_SHEET_ID = '1b-cwze2D5X4WaheAWIXycDiR6ZGG0XDvhXEVCoAqxKY'
 
 WON_RANGE = 'Shipping!A1:M'
+PYP_RANGE = 'PyP Selections!AX2:BM'
 
 def auth():
     """Get login credentials done (opens browser tab for interactive
@@ -58,8 +59,8 @@ def auth():
 def get_sheet( service, sheet_id, sheet_range ):
     # Call the Sheets API
     sheet = service.spreadsheets()
-    result = sheet.values().get(spreadsheetId=AUCTION_SHEET_ID,
-                                range=WON_RANGE).execute()
+    result = sheet.values().get(spreadsheetId=sheet_id,
+                                range=sheet_range).execute()
     values = result.get('values', [])
 
     return values
@@ -99,13 +100,12 @@ def process_bids( sheet, cancelled=False ):
             except Exception as e:
                 bid[headers[i]] = None
                 #raise Exception( "Header: %d of %s\nLed to\n%s" % ( i, headers[i], e ) )
-                
+
         bids.append( bid )
 
     return bids
 
-
-def report_end( bids ):
+def report_end( bids, pyps ):
     bidders = sorted( { b['bidder_name'] : True for b in bids }.keys() )
 
     for bidder in bidders:
@@ -113,9 +113,9 @@ def report_end( bids ):
         item_counts = {}
         won_message = []
         shipping = {}
-            
+
         bb = [ b for b in bids if b['bidder_name'] == bidder ]
-        
+
         userid = bb[0]['bidder_url'].split( '=' )[-1]
         contact_url = "https://truedungeon.com/component/uddeim/?task=new&recip=%s" % ( userid )
 
@@ -129,6 +129,22 @@ def report_end( bids ):
 
             if bid['address']:
                 address = bid['address']
+
+        pyp_choices = []
+        pyp_won = 0
+        pyp_text = ""
+        for pyp in pyps:
+          if pyp['bidder_url'] == bb[0]['bidder_url']:
+            pyp_won += pyp['won_quantity']
+            for k, v in pyp.items():
+              if k.startswith( 'ur' ):
+                if v is not None and v != '':
+                  pyp_choices.append( v )
+        #import pdb
+        #pdb.set_trace()
+        #1+1
+        if pyp_won != 0 or pyp_choices != []:
+          pyp_text = "%d PyP selections which were:\n%s" % ( pyp_won, "\n".join( sorted( pyp_choices ) ) )
 
         dt = texttable.Texttable()
         dt.set_cols_align( ['r', 'l'] )
@@ -159,10 +175,10 @@ def report_end( bids ):
         shipping['Ship To - City'] = city
         shipping['Ship To - Postal Code'] = zipcode
         '''
-        
+
         details = "\n".join( sorted( won_message ) )
 
-        print "-"*80, "\n", contact_url, "\n", "Auction Items for: %s\n\n%s\n\n%s\n\nAuction Breakdown:\n%s\n\n" % ( bidder, address, dt.draw(), details )
+        print "-"*80, "\n", contact_url, "\n", "Auction Items for: %s\n\nPlease verify your address and won items below, if everything is correct no need to respond.  If not, please let me know!\n\n%s\n\n%s\n\n%s\n\nAuction Breakdown:\n%s\n\n" % ( bidder, address, pyp_text, dt.draw(), details )
 
 
 
@@ -200,17 +216,19 @@ def stamps_csv():
         'Gift Message'
     ]
 
-    
-    
+
+
 def main():
     # Get the auction sheet and current bids.
     service = auth()
 
     sheet = get_sheet( service, AUCTION_SHEET_ID, WON_RANGE )
+    sheet_pyps = get_sheet( service, AUCTION_SHEET_ID, PYP_RANGE )
 
     bids = process_bids( sheet )
+    pyps = process_bids( sheet_pyps )
 
-    report_end( bids )
+    report_end( bids, pyps )
 
 
 if __name__ == '__main__':
