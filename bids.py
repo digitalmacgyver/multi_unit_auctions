@@ -52,12 +52,18 @@ AUCTION_SHEET_ID = '1b-cwze2D5X4WaheAWIXycDiR6ZGG0XDvhXEVCoAqxKY'
 #GOAL = 7500
 
 # No. 8
-CURRENT_NO = 8
-BID_RANGE = 'No. 8!A2:K'
-WON_RANGE = 'No. 8!K3:M'
-GOAL = 6815
+#CURRENT_NO = 8
+#BID_RANGE = 'No. 8!A2:K'
+#WON_RANGE = 'No. 8!K3:M'
+#GOAL = 6815
 
-END_DATE = 'December 7th'
+# No. 8
+CURRENT_NO = 9
+BID_RANGE = 'No. 9!A2:K'
+WON_RANGE = 'No. 9!K3:M'
+GOAL = 7500
+
+END_DATE = 'July 1st'
 #END_DATE = 'October 31st'
 
 def auth():
@@ -207,7 +213,7 @@ def compute_winners( bids ):
 WIN_FRONT = '''
 Welcome to my Discount Lightning $8k Order Auction No. %d.
 
-[b]Change to Auction No. 6: Announcing your pseudonym at end of auction now gets you a $3 discount on shipping, rather than free shipping.[/b]
+[b]Announcing your pseudonym at end of auction now gets you a $3 discount on shipping.[/b]
 
 By now you know the drill: Faster, Cheaper, and high Transparency.  Details in Post #2.
 
@@ -233,7 +239,7 @@ If you'd like to learn more, see the example below in the second post on this th
   [li]Items will be mailed to you within 1 week after my receipt of them from True Adventures.  Be forewarned that some items (like adventure modules) are sent out by True Adventures much later than others.[/li]
 [/ul]
 
-[b]Shipping:[/b] Within the US: $8 per customer.  Outside the US: Actual shipping cost.  You may choose to announce your pseudonym after the auction in exchange for a $3 discount on shipping.  Maximum shipping per customer across all auctions is $14.35.  If your total purchases across all auctions exceed $2000 I will refund all shipping costs.
+[b]Shipping:[/b] Within the US: $8 per customer.  Outside the US: Actual shipping cost.  You may choose to announce your pseudonym after the auction in exchange for a $3 discount on shipping. If your total purchases in this auction exceeds $2000 I will cover your shipping for free.
 
 
 [b]Payment:[/b] Is via PayPal and due within 3 days of me notifying you of your won bid.  The amount that reaches my PayPal account must be the sum of your won bids and shipping.

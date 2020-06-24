@@ -26,9 +26,10 @@ SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
 AUCTION_SHEET_ID = '1b-cwze2D5X4WaheAWIXycDiR6ZGG0XDvhXEVCoAqxKY'
 #BID_RANGE = 'No. 6!A2:M'
 #BID_RANGE = 'No. 7!A2:M'
-BID_RANGE = 'No. 8!A2:M'
+#BID_RANGE = 'No. 8!A2:M'
+BID_RANGE = 'No. 9!A2:M'
 
-GOAL = 6815
+GOAL = 7500
 
 def auth():
     """Get login credentials done (opens browser tab for interactive
@@ -161,7 +162,7 @@ def report_changes( bids ):
 
     changed = { b['item'] : True for b in bids if b['old_won_quantity'] == -1 and b['cancelled'] == '' }
 
-    message = "[b]NOTE: If this auction doesn't fund by December 7th I will need to close it early as I need time to collect payment and place the order before the 3x Treasure Chips early order reward is still available.[/b]\n\n Updated winning bids for:\n\n"
+    message = "[b]NOTE: If this auction doesn't fund by July 1st I will need to close it early as I need time to collect payment, place the order and ship before Gen Con.[/b]\n\nUpdated winning bids for:\n\n"
 
     for item in sorted( changed.keys() ):
         message += "%s\n" % ( item )

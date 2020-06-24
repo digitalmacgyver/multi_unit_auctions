@@ -23,8 +23,9 @@ SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
 # The ID and range of a sample spreadsheet.
 AUCTION_SHEET_ID = '1b-cwze2D5X4WaheAWIXycDiR6ZGG0XDvhXEVCoAqxKY'
 
-WON_RANGE = 'Shipping!A1:M'
-PYP_RANGE = 'PyP Selections!AX2:BM'
+WON_RANGE = 'Shipping9!A1:M'
+PYP_RANGE = 'PyP Selections!AY2:BN'
+PYP_AUCTIONS = [ 'auction', '9' ]
 
 def auth():
     """Get login credentials done (opens browser tab for interactive
@@ -134,12 +135,17 @@ def report_end( bids, pyps ):
         pyp_won = 0
         pyp_text = ""
         for pyp in pyps:
-          if pyp['bidder_url'] == bb[0]['bidder_url']:
-            pyp_won += pyp['won_quantity']
-            for k, v in pyp.items():
-              if k.startswith( 'ur' ):
-                if v is not None and v != '':
-                  pyp_choices.append( v )
+          try:
+            if pyp['bidder_url'] == bb[0]['bidder_url']:
+              pyp_won += pyp['won_quantity']
+              for k, v in pyp.items():
+                if k.startswith( 'ur' ):
+                  if v is not None and v != '':
+                    pyp_choices.append( v )
+          except Exception as e:
+            raise e
+            #import pdb
+            #pdb.set_trace()
         #import pdb
         #pdb.set_trace()
         #1+1
@@ -223,7 +229,7 @@ def main():
     service = auth()
 
     sheet = get_sheet( service, AUCTION_SHEET_ID, WON_RANGE )
-    sheet_pyps = get_sheet( service, AUCTION_SHEET_ID, PYP_RANGE )
+    sheet_pyps = [ x for x in get_sheet( service, AUCTION_SHEET_ID, PYP_RANGE ) if x[0] in PYP_AUCTIONS ]
 
     bids = process_bids( sheet )
     pyps = process_bids( sheet_pyps )

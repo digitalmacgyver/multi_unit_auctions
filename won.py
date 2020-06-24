@@ -49,11 +49,20 @@ AUCTION_SHEET_ID = '1b-cwze2D5X4WaheAWIXycDiR6ZGG0XDvhXEVCoAqxKY'
 #SHIPPING_DISCOUNT = 3
 
 # No. 7
-BID_RANGE = 'No. 7!A2:M'
-CURRENT_URL = 'https://truedungeon.com/forum?view=topic&catid=584&id=250617'
-NEXT_URL = 'https://truedungeon.com/forum?view=topic&catid=584&id=250702'
-AUCTION_NO = 7
-PAYMENT_DATE = 'November 22nd'
+#BID_RANGE = 'No. 7!A2:M'
+#CURRENT_URL = 'https://truedungeon.com/forum?view=topic&catid=584&id=250617'
+#NEXT_URL = 'https://truedungeon.com/forum?view=topic&catid=584&id=250702'
+#AUCTION_NO = 7
+##PAYMENT_DATE = 'November 22nd'
+#SHIPPING_COST = 8
+#SHIPPING_DISCOUNT = 3
+
+# No. 9
+BID_RANGE = 'No. 9!A2:M'
+CURRENT_URL = 'https://truedungeon.com/forum?view=topic&catid=584&id=251008'
+NEXT_URL = None
+AUCTION_NO = 9
+PAYMENT_DATE = 'June 17th'
 SHIPPING_COST = 8
 SHIPPING_DISCOUNT = 3
 
@@ -142,12 +151,17 @@ def report_end( bids ):
     for bidder in bidders:
         bb = [ b for b in bids if ( b['pseudonym'] == bidder and b['cancelled'] == '' ) ]
 
+        if len( bb ) == 0:
+          # Someone has only cancelled bids
+          continue
+
         won_message = ""
         lost_message = ""
 
         won_total = 0
 
         userid = bb[0]['bidder_url'].split( '=' )[-1]
+
         contact_url = "https://truedungeon.com/component/uddeim/?task=new&recip=%s" % ( userid )
 
         for bid in sorted( bb, key=operator.itemgetter( 'item' ) ):
@@ -165,7 +179,8 @@ def report_end( bids ):
         if won_message != '':
             won_message = "You won the following:\n\n" + won_message
             won_message += "\nFor a grand total of $%0.02f + $%0.02f shipping = $%0.02f\n" % ( won_total, SHIPPING_COST, won_total + SHIPPING_COST )
-            won_message += '''
+            if NEXT_URL is not None:
+              won_message += '''
 You may announce your pseudonym on the thread at:\n%s for an $%0.02f discount on shipping.
 
 Before %s please:
@@ -180,9 +195,27 @@ Thank you!
 If you missed out on something, I'm running another auction of the same kind at:
 %s
 ''' % ( CURRENT_URL, SHIPPING_DISCOUNT, PAYMENT_DATE, AUCTION_NO, bidder, NEXT_URL )
+            else:
+              won_message += '''
+You may announce your pseudonym on the thread at:\n%s for an $%0.02f discount on shipping.
+
+Before %s please:
+
+1. Submit payment via PayPal to: mjhayward@gmail.com
+   - Please include this memo with your payment: No. %d - %s
+2. Send me your PyP selections, if any.
+3. Send me your shipping address.
+
+Thank you!
+
+''' % ( CURRENT_URL, SHIPPING_DISCOUNT, PAYMENT_DATE, AUCTION_NO, bidder )
+
 
         if lost_message != '':
-            lost_message = "You bids did not win the quantities below.\n\nWould you like me to carry these bids over to Auction No. %d at\n%s\n?\n\n" % ( AUCTION_NO + 1, NEXT_URL )  + lost_message
+            if NEXT_URL is not None:
+                lost_message = "You bids did not win the quantities below.\n\nWould you like me to carry these bids over to Auction No. %d at\n%s\n?\n\n" % ( AUCTION_NO + 1, NEXT_URL )  + lost_message
+            else:
+                lost_message = "You bids did not win the quantities below.\n\n" + lost_message
 
         if won_message != '' or lost_message != '':
             print "="*80

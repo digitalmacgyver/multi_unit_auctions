@@ -22,9 +22,10 @@ SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
 # The ID and range of a sample spreadsheet.
 AUCTION_SHEET_ID = '1b-cwze2D5X4WaheAWIXycDiR6ZGG0XDvhXEVCoAqxKY'
 #BID_RANGE = 'No. 7!A2:M'
-BID_RANGE = 'No. 8!A2:M'
+#BID_RANGE = 'No. 8!A2:M'
+BID_RANGE = 'No. 9!A2:M'
 
-AUCTION_URL = 'https://truedungeon.com/forum?view=topic&catid=584&id=250702'
+AUCTION_URL = 'https://truedungeon.com/forum?view=topic&catid=584&id=251008'
 
 def auth():
     """Get login credentials done (opens browser tab for interactive
@@ -131,13 +132,18 @@ def report_changes( bids ):
             if winning != "":
                 winning = "Status of your other bids:\n" + winning
         elif winning != "":
-            winning = "Bid summary - you are winning:\n" + winning
+            winning = "Bid summary:\n" + winning
 
         if issue_report:
             userid = bid['bidder_url'].split( '=' )[-1]
             contact_url = "https://truedungeon.com/component/uddeim/?task=new&recip=%s" % ( userid )
             print '='*80
-            print "%s\nAuction update for %s\n\nNOTE: If this auction doesn't fund by December 7th I will need to cancel it or close it early as I need time to collect payment and place the order before the 3x Treasure Chips early order reward is still available.\n\nIn auction: %s\n\n%s\n\n%s" % ( contact_url, bidder, AUCTION_URL, outbid, winning )
+            try:
+              print "%s\nAuction update for: %s\nIn auction: %s\n\n%s\n\n%s" % ( contact_url, bidder, AUCTION_URL, outbid, winning )
+            except Exception as e:
+              import pdb
+              pdb.set_trace()
+              1+1
 
 
 def main():
